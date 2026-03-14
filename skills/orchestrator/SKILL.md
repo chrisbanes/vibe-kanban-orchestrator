@@ -33,7 +33,19 @@ If the file doesn't exist or is invalid, use these defaults:
    - If `pull_requests` contains a PR with a merged status, call `update_issue(issue_id, status: "Done")`.
    - Report: "Marked <issue simple_id> as Done (PR merged)".
 
-## Step 3: Check Workspace Health
+## Step 3: Check for Reviewable Work
+
+1. If `review.enabled` is `false`, skip this step.
+2. Iterate over active workspaces from Step 2.
+3. For each workspace with a linked issue:
+   - Call `get_issue(issue_id)` to check the issue state.
+   - If `latest_pr_status` shows an open PR **and** the issue status is "In Progress":
+     - Call `create_session(workspace_id)` — pass `executor` and/or `variant` from `review` config only if set.
+     - Call `run_session_prompt(session_id, <review.prompt>)`.
+     - Call `update_issue(issue_id, status: "In Review")`.
+     - Report: "Started review for <issue simple_id>: <issue title>"
+
+## Step 4: Check Workspace Health
 
 Review each non-archived workspace from Step 2:
 
@@ -41,21 +53,21 @@ Review each non-archived workspace from Step 2:
 2. Check linked issue's `latest_pr_status` — if the PR was closed (not merged), flag the workspace as failed.
 3. Report any stuck or failed workspaces so the user is aware. Do NOT automatically take action on these — just report them.
 
-## Step 4: Check Concurrency
+## Step 5: Check Concurrency
 
 1. Count non-archived workspaces (from Step 2 results).
 2. If count >= `max_concurrent_workspaces` from config:
    - Report: "Max concurrency reached (<count>/<max>). Not picking up new work."
-   - Skip to Step 9 (Report).
+   - Skip to Step 10 (Report).
 
-## Step 5: Gather Eligible Work
+## Step 6: Gather Eligible Work
 
 1. Call `list_organizations` to get all orgs.
 2. For each org, call `list_projects(organization_id)`.
 3. For each project, call `list_issues(project_id, status: "To do")`.
 4. Collect all "To do" issues, keeping track of which project each belongs to.
 
-## Step 6: Filter by Dependencies
+## Step 7: Filter by Dependencies
 
 For each candidate issue:
 
@@ -67,15 +79,15 @@ Sort eligible issues:
 - By priority: urgent (1) > high (2) > medium (3) > low (4) > null (5)
 - Within same priority: by `created_at` ascending (oldest first)
 
-If no eligible issues exist, report "No eligible work found" and skip to Step 9.
+If no eligible issues exist, report "No eligible work found" and skip to Step 10.
 
-## Step 7: Match Repo
+## Step 8: Match Repo
 
 1. Call `list_repos` to get all available repos.
 2. Take the selected issue's project name and find a repo with a matching name (case-insensitive).
-3. If no match: skip this issue, try the next eligible issue. If all exhausted, report "No repo match found for any eligible issue" and skip to Step 9.
+3. If no match: skip this issue, try the next eligible issue. If all exhausted, report "No repo match found for any eligible issue" and skip to Step 10.
 
-## Step 8: Start Workspace
+## Step 9: Start Workspace
 
 1. Determine the pre-prompt:
    - Check `project_overrides[project_name].pre_prompt` in config (case-insensitive key match).
@@ -92,7 +104,7 @@ If no eligible issues exist, report "No eligible work found" and skip to Step 9.
 4. Call `update_issue(issue_id, status: "In Progress")`.
 5. Report: "Started workspace for <issue simple_id>: <issue title> (repo: <repo name>, branch: <branch>)"
 
-## Step 9: Report Summary
+## Step 10: Report Summary
 
 Output a summary with these sections:
 
