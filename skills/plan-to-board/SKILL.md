@@ -50,7 +50,22 @@ If the file doesn't exist or is invalid, use the default.
 2. Present the suggested priority and ask the user to confirm or change it.
    - Options: urgent, high, medium, low
 
-## Step 7: Create Issue
+## Step 7: Choose Issue Granularity
+
+Ask the user:
+
+```
+How should the plan be added to the board?
+
+1. Single issue — the entire plan becomes one issue
+2. One issue per task — each ### Task in the plan becomes a separate issue
+
+Which option?
+```
+
+## Step 8: Create Issues
+
+### If Option 1 (Single issue):
 
 1. Call `create_issue` with:
    - `title`: The extracted title from Step 4
@@ -59,7 +74,23 @@ If the file doesn't exist or is invalid, use the default.
    - `priority`: From Step 6
 2. Report: "Created issue <simple_id>: <title>"
 
-## Step 8: Offer Prompt Update
+### If Option 2 (One issue per task):
+
+1. Parse the plan for `### Task` headings. Each task section runs from its heading to the next `### Task` heading (or end of file).
+2. Create a parent issue:
+   - `title`: The extracted title from Step 4
+   - `description`: The plan header content (everything before the first `### Task`)
+   - `project_id`: From Step 5
+   - `priority`: From Step 6
+3. For each task section, call `create_issue` with:
+   - `title`: The task heading text (e.g., "Task 1: Component Name")
+   - `description`: The full task section content verbatim
+   - `project_id`: From Step 5
+   - `priority`: From Step 6
+   - `parent_issue_id`: The parent issue ID from step 2
+4. Report each created issue: "Created issue <simple_id>: <title>"
+
+## Step 9: Offer Prompt Update
 
 1. Read `~/.vibe-kanban-orchestrate.json` again to check the current `prompt` field.
 2. Ask the user: "Would you like to update the orchestrator prompt to tell workspace agents to follow plan-based issue descriptions? Current prompt: `<current prompt>`"
@@ -69,17 +100,22 @@ If the file doesn't exist or is invalid, use the default.
 5. If confirmed, update `~/.vibe-kanban-orchestrate.json` with the new `prompt` value, preserving all other fields.
 6. If the user declines, skip this step.
 
-## Step 9: Report
+## Step 10: Report
 
 Output a summary:
 
 ```
 ## Plan to Board
 
-- **Issue:** <simple_id> — <title>
+- **Issues created:** <count>
 - **Project:** <project name>
 - **Priority:** <priority>
 - **Prompt updated:** Yes/No
 
-Run `/orchestrator` to pick up this issue, or wait for the next scheduled run.
+### Issues
+- <simple_id> — <title>
+- <simple_id> — <title> (if multiple)
+- ...
+
+Run `/orchestrator` to pick up these issues, or wait for the next scheduled run.
 ```
