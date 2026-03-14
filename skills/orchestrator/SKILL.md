@@ -11,15 +11,19 @@ You are an orchestrator. Follow these steps exactly.
 
 Read `~/.vibe-kanban-orchestrate.json` to get:
 - `max_concurrent_workspaces` (default: 2)
-- `default_branch` (default: "origin/main")
-- `default_pre_prompt`
-- `project_overrides` (per-project pre_prompt and branch overrides)
+- `default_branch` (default: "main")
+- `prompt`
+- `review` (nested object with `enabled`, `executor`, `variant`, `prompt`)
 
 If the file doesn't exist or is invalid, use these defaults:
 - max_concurrent_workspaces: 2
 - default_branch: "main"
-- default_pre_prompt: "You are an autonomous coding agent working on a task from the backlog. Read the task description carefully, explore the codebase, implement changes with tests, follow existing conventions, and create a PR when done."
-- project_overrides: {}
+- prompt: "You are an autonomous coding agent working on a task from the backlog. Read the task description carefully, explore the codebase, implement changes with tests, follow existing conventions, and create a PR when done."
+- review:
+  - enabled: true
+  - executor: (not set — uses server default)
+  - variant: (not set — uses server default)
+  - prompt: "You are a code reviewer. Review the open PR in this workspace. Examine all changes for bugs, code quality issues, missing tests, and deviations from the issue requirements. Fix any issues you find and push your changes."
 
 ## Step 2: Check Completed Work
 
