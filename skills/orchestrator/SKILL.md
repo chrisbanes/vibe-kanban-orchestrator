@@ -89,18 +89,14 @@ If no eligible issues exist, report "No eligible work found" and skip to Step 10
 
 ## Step 9: Start Workspace
 
-1. Determine the pre-prompt:
-   - Check `project_overrides[project_name].pre_prompt` in config (case-insensitive key match).
-   - If not set, use `default_pre_prompt` from config.
-2. Determine the branch:
-   - Check `project_overrides[project_name].branch` in config.
-   - If not set, use `default_branch` from config.
+1. Determine the prompt: use `prompt` from config.
+2. Determine the branch: use `default_branch` from config.
 3. Call `start_workspace` with:
    - `name`: The issue title
    - `executor`: `"CLAUDE_CODE"`
    - `repositories`: `[{ repo_id: <matched_repo_id>, branch: <branch> }]`
    - `issue_id`: The issue's ID
-   - `prompt`: `<pre_prompt>\n\nTask:\n<issue title>\n<issue description>`
+   - `prompt`: `<prompt>\n\nTask:\n<issue title>\n<issue description>`
 4. Call `update_issue(issue_id, status: "In Progress")`.
 5. Report: "Started workspace for <issue simple_id>: <issue title> (repo: <repo name>, branch: <branch>)"
 
