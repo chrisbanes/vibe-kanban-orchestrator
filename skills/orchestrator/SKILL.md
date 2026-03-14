@@ -110,6 +110,9 @@ Output a summary with these sections:
 ### Completed
 - <issues marked as Done, or "None">
 
+### Reviews
+- <reviews started, or "None">
+
 ### Health Warnings
 - <stuck or failed workspaces, or "None">
 
