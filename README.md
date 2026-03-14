@@ -30,7 +30,7 @@ Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
     "variant": "sonnet",
     "prompt": "You are a code reviewer. Review the open PR in this workspace. Examine all changes for bugs, code quality issues, missing tests, and deviations from the issue requirements. Fix any issues you find and push your changes."
   },
-  "plan_directory": "docs/plans/"
+  "plan_directory": "docs/plans"
 }
 ```
 
@@ -43,7 +43,7 @@ Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 | `review.executor` | server default | Executor for the review session |
 | `review.variant` | server default | Variant (model) for the review session |
 | `review.prompt` | See above | Prompt given to the review agent |
-| `plan_directory` | `"docs/plans/"` | Directory to search for plan files |
+| `plan_directory` | `"docs/plans"` | Directory to search for plan files |
 
 ## Usage
 

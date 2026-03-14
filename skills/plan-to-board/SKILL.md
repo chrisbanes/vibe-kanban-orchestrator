@@ -10,7 +10,7 @@ You are creating a Vibe Kanban issue from a plan document. Follow these steps ex
 ## Step 1: Load Config
 
 Read `~/.vibe-kanban-orchestrate.json` to get:
-- `plan_directory` (default: `docs/plans/`)
+- `plan_directory` (default: `docs/plans`)
 
 If the file doesn't exist or is invalid, use the default.
 
@@ -76,7 +76,7 @@ Which option?
 
 ### If Option 2 (One issue per task):
 
-1. Parse the plan for `### Task` headings. Each task section runs from its heading to the next `### Task` heading (or end of file).
+1. Parse the plan for headings that start with `### Task` (e.g., `### Task 1: Component Name`, `### Task 2: API Layer`). Each task section runs from its heading to the next `### Task` heading (or end of file).
 2. Create a parent issue:
    - `title`: The extracted title from Step 4
    - `description`: The plan header content (everything before the first `### Task`)
