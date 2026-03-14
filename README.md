@@ -17,18 +17,18 @@ claude plugin add --from github:chrisbanes/vibe-kanban-orchestrator
 
 ## Configuration
 
-Optionally create `~/.vibe-kanban-orchestrator.json` to customize behavior:
+Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 
 ```json
 {
   "max_concurrent_workspaces": 2,
   "default_branch": "main",
-  "default_pre_prompt": "You are an autonomous coding agent working on a task from the backlog. Read the task description carefully, explore the codebase, implement changes with tests, follow existing conventions, and create a PR when done.",
-  "project_overrides": {
-    "my-project": {
-      "pre_prompt": "Custom prompt for this project",
-      "branch": "develop"
-    }
+  "prompt": "You are an autonomous coding agent working on a task from the backlog. Read the task description carefully, explore the codebase, implement changes with tests, follow existing conventions, and create a PR when done.",
+  "review": {
+    "enabled": true,
+    "executor": "CLAUDE_CODE",
+    "variant": "sonnet",
+    "prompt": "You are a code reviewer. Review the open PR in this workspace. Examine all changes for bugs, code quality issues, missing tests, and deviations from the issue requirements. Fix any issues you find and push your changes."
   }
 }
 ```
@@ -37,8 +37,11 @@ Optionally create `~/.vibe-kanban-orchestrator.json` to customize behavior:
 |-------|---------|-------------|
 | `max_concurrent_workspaces` | `2` | Maximum number of active workspaces at once |
 | `default_branch` | `"main"` | Branch to use when starting new workspaces |
-| `default_pre_prompt` | See above | System prompt prepended to each workspace task |
-| `project_overrides` | `{}` | Per-project overrides for `pre_prompt` and `branch` |
+| `prompt` | See above | System prompt prepended to each workspace task |
+| `review.enabled` | `true` | Whether to auto-review PRs before merge |
+| `review.executor` | server default | Executor for the review session |
+| `review.variant` | server default | Variant (model) for the review session |
+| `review.prompt` | See above | Prompt given to the review agent |
 
 ## Usage
 
@@ -53,10 +56,11 @@ You can also use system cron to trigger it on a schedule.
 ## What it does
 
 1. Checks completed workspaces and marks merged PRs as Done
-2. Flags stuck or failed workspaces
-3. Picks up the next highest-priority unblocked task
-4. Matches it to a repo and starts a new workspace
-5. Reports a summary of all actions taken
+2. Starts code reviews for workspaces with open PRs
+3. Flags stuck or failed workspaces
+4. Picks up the next highest-priority unblocked task
+5. Matches it to a repo and starts a new workspace
+6. Reports a summary of all actions taken
 
 ## License
 
