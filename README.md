@@ -11,8 +11,11 @@ Run it manually or set it up on a cron to keep your backlog moving.
 
 ## Installation
 
+Add the marketplace and install the plugin:
+
 ```
-claude plugin add --from github:chrisbanes/vibe-kanban-orchestrator
+/plugin marketplace add chrisbanes/vibe-kanban-orchestrator
+/plugin install vibe-kanban-orchestrator@vibe-kanban-orchestrator
 ```
 
 ## Configuration
