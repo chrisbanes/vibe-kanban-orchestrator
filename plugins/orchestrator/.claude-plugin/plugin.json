@@ -1,5 +1,5 @@
 {
-  "name": "vibe-kanban-orchestrator",
+  "name": "orchestrator",
   "description": "Orchestration skill for Vibe Kanban — checks for open tasks, manages workspace lifecycle, and starts new workspaces for the next highest-priority task.",
   "version": "0.1.0",
   "author": {
