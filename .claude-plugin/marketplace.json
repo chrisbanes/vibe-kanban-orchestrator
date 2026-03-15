@@ -1,0 +1,27 @@
+{
+  "name": "vibe-kanban",
+  "owner": {
+    "name": "Chris Banes",
+    "email": "chris@banes.me"
+  },
+  "metadata": {
+    "description": "Plugins for Vibe Kanban — AI-driven task management and orchestration for Claude Code.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "vibe-kanban-orchestrator",
+      "source": ".",
+      "description": "Orchestration skill for Vibe Kanban — checks for open tasks, manages workspace lifecycle, and starts new workspaces for the next highest-priority task.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Chris Banes",
+        "email": "chris@banes.me"
+      },
+      "homepage": "https://chrisbanes.me",
+      "repository": "https://github.com/chrisbanes/vibe-kanban-orchestrator",
+      "license": "Apache-2.0",
+      "keywords": ["orchestration", "vibe-kanban", "automation", "task-management"]
+    }
+  ]
+}
