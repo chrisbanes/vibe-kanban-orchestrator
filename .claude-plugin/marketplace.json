@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Plugins for Vibe Kanban — AI-driven task management and orchestration for Claude Code.",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "orchestrator",
       "source": "./plugins/orchestrator",
       "description": "Orchestration skill for Vibe Kanban — checks for open tasks, manages workspace lifecycle, and starts new workspaces for the next highest-priority task.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Chris Banes",
         "email": "chris@banes.me"
@@ -27,7 +27,7 @@
       "name": "plan-to-board",
       "source": "./plugins/plan-to-board",
       "description": "Read a plan document and create a Vibe Kanban issue from it. Use after writing a plan to queue it for orchestrated execution.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Chris Banes",
         "email": "chris@banes.me"
