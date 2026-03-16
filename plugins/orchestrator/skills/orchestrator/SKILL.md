@@ -30,7 +30,7 @@ If the file doesn't exist or is invalid, use these defaults:
 1. Call `list_workspaces(archived: false)` to get all active workspaces.
 2. For each workspace that has a linked issue:
    - Call `get_issue(issue_id)` to check the issue state.
-   - If `pull_requests` contains a PR with a merged status, call `update_issue(issue_id, status: "Done")`.
+   - If `pull_requests` contains a PR with a merged status **and** the issue status is "Human Review", call `update_issue(issue_id, status: "Done")`.
    - Report: "Marked <issue simple_id> as Done (PR merged)".
 
 ## Step 3: Check for Reviewable Work
@@ -45,7 +45,17 @@ If the file doesn't exist or is invalid, use these defaults:
      - Call `update_issue(issue_id, status: "In Review")`.
      - Report: "Started review for <issue simple_id>: <issue title>"
 
-## Step 4: Check Workspace Health
+## Step 4: Check for Human Review
+
+1. Iterate over active workspaces from Step 2.
+2. For each workspace with a linked issue:
+   - Call `get_issue(issue_id)` to check the issue state.
+   - If the issue status is "In Review":
+     - Call `list_sessions(workspace_id)` to check review session status.
+     - If the most recent session has completed (is no longer running), call `update_issue(issue_id, status: "Human Review")`.
+     - Report: "Moved <issue simple_id> to Human Review (automated review complete)"
+
+## Step 5: Check Workspace Health
 
 Review each non-archived workspace from Step 2:
 
@@ -53,21 +63,21 @@ Review each non-archived workspace from Step 2:
 2. Check linked issue's `latest_pr_status` — if the PR was closed (not merged), flag the workspace as failed.
 3. Report any stuck or failed workspaces so the user is aware. Do NOT automatically take action on these — just report them.
 
-## Step 5: Check Concurrency
+## Step 6: Check Concurrency
 
-1. Count non-archived workspaces (from Step 2 results).
+1. Count non-archived workspaces (from Step 2 results), excluding any whose linked issue status is "Human Review".
 2. If count >= `max_concurrent_workspaces` from config:
    - Report: "Max concurrency reached (<count>/<max>). Not picking up new work."
-   - Skip to Step 10 (Report).
+   - Skip to Step 11 (Report).
 
-## Step 6: Gather Eligible Work
+## Step 7: Gather Eligible Work
 
 1. Call `list_organizations` to get all orgs.
 2. For each org, call `list_projects(organization_id)`.
 3. For each project, call `list_issues(project_id, status: "To do")`.
 4. Collect all "To do" issues, keeping track of which project each belongs to.
 
-## Step 7: Filter by Dependencies
+## Step 8: Filter by Dependencies
 
 For each candidate issue:
 
@@ -79,15 +89,15 @@ Sort eligible issues:
 - By priority: urgent (1) > high (2) > medium (3) > low (4) > null (5)
 - Within same priority: by `created_at` ascending (oldest first)
 
-If no eligible issues exist, report "No eligible work found" and skip to Step 10.
+If no eligible issues exist, report "No eligible work found" and skip to Step 11.
 
-## Step 8: Match Repo
+## Step 9: Match Repo
 
 1. Call `list_repos` to get all available repos.
 2. Take the selected issue's project name and find a repo with a matching name (case-insensitive).
-3. If no match: skip this issue, try the next eligible issue. If all exhausted, report "No repo match found for any eligible issue" and skip to Step 10.
+3. If no match: skip this issue, try the next eligible issue. If all exhausted, report "No repo match found for any eligible issue" and skip to Step 11.
 
-## Step 9: Start Workspace
+## Step 10: Start Workspace
 
 1. Determine the prompt: use `prompt` from config.
 2. Determine the branch: use `default_branch` from config.
@@ -100,7 +110,7 @@ If no eligible issues exist, report "No eligible work found" and skip to Step 10
 4. Call `update_issue(issue_id, status: "In Progress")`.
 5. Report: "Started workspace for <issue simple_id>: <issue title> (repo: <repo name>, branch: <branch>)"
 
-## Step 10: Report Summary
+## Step 11: Report Summary
 
 Output a summary with these sections:
 
@@ -112,6 +122,9 @@ Output a summary with these sections:
 
 ### Reviews
 - <reviews started, or "None">
+
+### Awaiting Human Review
+- <issues moved to Human Review, or "None">
 
 ### Health Warnings
 - <stuck or failed workspaces, or "None">
