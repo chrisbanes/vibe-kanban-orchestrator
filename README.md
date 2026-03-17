@@ -75,6 +75,8 @@ Create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 | `github.project_number` | — | GitHub Project board number (required for GitHub plugin) |
 | `github.owner` | — | GitHub user or org that owns the project (required for GitHub plugin) |
 
+> **Recommended setup for GitHub Projects:** Use a single project board per org or team that tracks issues across multiple repos. The orchestrator pulls work from one project board and matches each issue to the correct repo automatically. This avoids needing separate orchestrator runs per repo.
+
 ## Usage
 
 ### Orchestration
