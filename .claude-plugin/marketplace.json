@@ -13,7 +13,7 @@
       "name": "vk-orchestrator",
       "source": "./plugins/vk-orchestrator",
       "description": "Orchestration and plan-to-project skills for Vibe Kanban — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
-      "version": "0.1.0",
+      "version": "0.1.2",
       "author": {
         "name": "Chris Banes",
         "email": "chris@banes.me"
@@ -27,7 +27,7 @@
       "name": "github-orchestrator",
       "source": "./plugins/github-orchestrator",
       "description": "Orchestration and plan-to-project skills for GitHub Projects — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
-      "version": "0.1.0",
+      "version": "0.1.2",
       "author": {
         "name": "Chris Banes",
         "email": "chris@banes.me"
