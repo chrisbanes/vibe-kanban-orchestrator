@@ -22,6 +22,20 @@
       "repository": "https://github.com/chrisbanes/vibe-kanban-orchestrator",
       "license": "Apache-2.0",
       "keywords": ["orchestration", "vibe-kanban", "automation", "task-management", "plan"]
+    },
+    {
+      "name": "github-orchestrator",
+      "source": "./plugins/github-orchestrator",
+      "description": "Orchestration and plan-to-project skills for GitHub Projects — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Chris Banes",
+        "email": "chris@banes.me"
+      },
+      "homepage": "https://chrisbanes.me",
+      "repository": "https://github.com/chrisbanes/vibe-kanban-orchestrator",
+      "license": "Apache-2.0",
+      "keywords": ["orchestration", "github-projects", "automation", "task-management"]
     }
   ]
 }
