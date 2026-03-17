@@ -1,13 +1,21 @@
 # vibe-kanban-orchestrator
 
-A Claude Code plugin that orchestrates [Vibe Kanban](https://vibekanban.com) workspaces. It checks for open tasks, manages workspace lifecycle, and starts new workspaces for the next highest-priority task.
+Claude Code plugins that orchestrate coding workspaces from your issue board. Supports both [Vibe Kanban](https://vibekanban.com) and GitHub Projects as issue trackers, with Vibe Kanban workspaces handling the agent execution.
 
-Run it manually or set it up on a cron to keep your backlog moving.
+Run manually or set up on a cron to keep your backlog moving.
+
+## Plugins
+
+| Plugin | Skills | Issue Tracker |
+|--------|--------|---------------|
+| `vk-orchestrator` | `/vk-orchestrate`, `/plan-to-vk-project` | Vibe Kanban |
+| `github-orchestrator` | `/gh-orchestrate`, `/plan-to-gh-project` | GitHub Projects |
 
 ## Prerequisites
 
 - [Claude Code](https://claude.com/claude-code) CLI
-- [Vibe Kanban](https://vibekanban.com) MCP server installed and configured
+- [Vibe Kanban](https://vibekanban.com) MCP server installed and configured (required for both — handles workspace execution)
+- [`gh` CLI](https://cli.github.com/) installed and authenticated (GitHub Projects plugin only)
 
 ## Installation
 
@@ -17,21 +25,23 @@ Add the marketplace, then install the plugin(s) you want:
 /plugin marketplace add chrisbanes/vibe-kanban-orchestrator
 ```
 
-Install the orchestrator skill:
+**For Vibe Kanban users:**
 
 ```
-/plugin install orchestrator@vibe-kanban-orchestrator
+/plugin install vk-orchestrator@vibe-kanban-orchestrator
 ```
 
-Optionally, install the plan-to-board skill:
+**For GitHub Projects users:**
 
 ```
-/plugin install plan-to-board@vibe-kanban-orchestrator
+/plugin install github-orchestrator@vibe-kanban-orchestrator
 ```
+
+You can install both if you use both systems.
 
 ## Configuration
 
-Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
+Create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 
 ```json
 {
@@ -44,7 +54,11 @@ Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
     "variant": "sonnet",
     "prompt": "You are a code reviewer. Review the open PR in this workspace. Examine all changes for bugs, code quality issues, missing tests, and deviations from the issue requirements. Fix any issues you find and push your changes."
   },
-  "plan_directory": "docs/plans"
+  "plan_directory": "docs/plans",
+  "github": {
+    "project_number": 1,
+    "owner": "your-github-username"
+  }
 }
 ```
 
@@ -58,41 +72,48 @@ Optionally create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 | `review.variant` | server default | Variant (model) for the review session |
 | `review.prompt` | See above | Prompt given to the review agent |
 | `plan_directory` | `"docs/plans"` | Directory to search for plan files |
+| `github.project_number` | — | GitHub Project board number (required for GitHub plugin) |
+| `github.owner` | — | GitHub user or org that owns the project (required for GitHub plugin) |
+
+> **Recommended setup for GitHub Projects:** Use a single project board per org or team that tracks issues across multiple repos. The orchestrator pulls work from one project board and matches each issue to the correct repo automatically. This avoids needing separate orchestrator runs per repo.
 
 ## Usage
 
-Invoke the `orchestrator` skill in Claude Code, or set up a recurring run:
+### Orchestration
+
+Run the orchestrator to check for work and start agents:
 
 ```
-/loop 10m /orchestrator
+/vk-orchestrate        # Vibe Kanban
+/gh-orchestrate        # GitHub Projects
 ```
 
-You can also use system cron to trigger it on a schedule.
-
-## What it does
-
-1. Checks completed workspaces and marks merged PRs as Done
-2. Starts code reviews for workspaces with open PRs
-3. Flags stuck or failed workspaces
-4. Picks up the next highest-priority unblocked task
-5. Matches it to a repo and starts a new workspace
-6. Reports a summary of all actions taken
-
-## Plan to Board
-
-Use `/plan-to-board` to create a Vibe Kanban issue from a plan document. This bridges plan authoring (e.g., from a brainstorming/planning session) with orchestrated execution.
+Set up a recurring run:
 
 ```
-/plan-to-board
+/loop 10m /vk-orchestrate
+/loop 10m /gh-orchestrate
 ```
 
-It will:
+Both orchestrators:
 
-1. Find plan files in your configured `plan_directory`
-2. Ask you to pick one (if multiple)
-3. Ask which project and priority
-4. Create an issue with the full plan as the description
-5. Optionally update your orchestrator prompt for plan-based execution
+1. Check completed workspaces and mark done (VK updates issue status; GitHub relies on auto-close from PR merge)
+2. Start code reviews for workspaces with open PRs
+3. Flag stuck or failed workspaces
+4. Pick up the next highest-priority unblocked task
+5. Match it to a repo and start a new workspace
+6. Report a summary of all actions taken
+
+### Plan to Project
+
+Create issues from a plan document:
+
+```
+/plan-to-vk-project    # Creates Vibe Kanban issues
+/plan-to-gh-project    # Creates GitHub Issues with sub-issues
+```
+
+Both will find plan files in your configured `plan_directory`, ask you to pick one, set priority, and create issues. The GitHub variant creates a parent issue (epic) with sub-issues for each `### Task` section.
 
 ## License
 
