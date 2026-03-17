@@ -73,15 +73,16 @@ Expected format:
    ```
    gh issue create --repo <repo> --title "<title>" --body "<plan header content before first ### Task>" --label "<priority label>"
    ```
-2. Capture the issue URL and number from the output.
+2. Capture the issue URL from the output. Parse the issue number from the URL (the last path segment, e.g., `https://github.com/owner/repo/issues/42` → `42`).
 3. Get the node ID for the parent issue:
    ```
    gh issue view <number> --repo <repo> --json id -q '.id'
    ```
-4. Add the parent issue to the GitHub Project:
+4. Add the parent issue to the GitHub Project and capture the item ID:
    ```
-   gh project item-add <project_number> --owner <owner> --url <issue_url>
+   gh project item-add <project_number> --owner <owner> --url <issue_url> --format json
    ```
+   Parse the `id` field from the JSON output — this is the project item ID needed for status updates.
 5. Set the item status to "Todo" on the project board. First, get the project metadata (try as organization first, fall back to user if it fails):
    ```
    gh api graphql -f query='
@@ -131,7 +132,7 @@ Expected format:
       ```
       gh issue create --repo <repo> --title "<task heading text>" --body "<task section content>" --label "<priority label>"
       ```
-   b. Capture the URL and number from the output.
+   b. Capture the URL from the output. Parse the issue number from the URL (last path segment).
    c. Get the child node ID:
       ```
       gh issue view <number> --repo <repo> --json id -q '.id'
@@ -147,11 +148,11 @@ Expected format:
         }
       ' -f parentId="<parent_node_id>" -f childId="<child_node_id>"
       ```
-   e. Add the sub-issue to the GitHub Project:
+   e. Add the sub-issue to the GitHub Project and capture the item ID:
       ```
-      gh project item-add <project_number> --owner <owner> --url <issue_url>
+      gh project item-add <project_number> --owner <owner> --url <issue_url> --format json
       ```
-   f. Set the item status to "Todo" using the cached project metadata from Step 7 and the same `updateProjectV2ItemFieldValue` mutation.
+   f. Set the item status to "Todo" using the cached project metadata from Step 7, the item ID from the `item-add` output, and the same `updateProjectV2ItemFieldValue` mutation.
 3. Report each: "Created sub-issue #N: <title>"
 
 ## Step 9: Report

@@ -152,7 +152,7 @@ If no eligible issues, report "No eligible work found" and skip to Step 9.
    - `executor`: `"CLAUDE_CODE"`
    - `repositories`: `[{ repo_id, branch: default_branch }]`
    - `prompt`: `<prompt>\n\nTask:\n<issue title>\n<issue description>`
-4. Move the GitHub Project item to "In Progress" via `gh project item-edit`.
+4. Move the GitHub Project item to "In Progress" via GraphQL `updateProjectV2ItemFieldValue` mutation.
 5. Report: "Started workspace for #N: <title> (repo: <repo>, branch: <branch>)"
 
 ### Step 9: Report Summary

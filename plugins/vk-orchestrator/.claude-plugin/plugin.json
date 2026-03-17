@@ -1,6 +1,6 @@
 {
   "name": "vk-orchestrator",
-  "description": "Orchestration and plan-to-board skills for Vibe Kanban — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
+  "description": "Orchestration and plan-to-project skills for Vibe Kanban — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
   "version": "0.1.0",
   "author": {
     "name": "Chris Banes",
