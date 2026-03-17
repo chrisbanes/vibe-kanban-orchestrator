@@ -5,7 +5,7 @@
     "email": "chris@banes.me"
   },
   "metadata": {
-    "description": "Plugins for Vibe Kanban — AI-driven task management and orchestration for Claude Code.",
+    "description": "Plugins for orchestrating coding workspaces from issue boards — supports Vibe Kanban and GitHub Projects.",
     "version": "0.2.0"
   },
   "plugins": [

@@ -124,7 +124,7 @@ If no eligible issues exist, report "No eligible work found" and skip to Step 9.
    - `repositories`: `[{ repo_id: <matched_repo_id>, branch: <default_branch> }]`
    - `prompt`: `<prompt>\n\nTask:\n<issue title>\n<issue body>`
 6. Move the GitHub Project item to "In Progress":
-   - Get the project's node ID, status field ID, and "In Progress" option ID. Use this GraphQL query:
+   - Get the project's node ID, status field ID, and "In Progress" option ID. First try as an organization, and if that fails, retry as a user:
      ```
      gh api graphql -f query='
        query($owner: String!, $number: Int!) {
@@ -145,7 +145,27 @@ If no eligible issues exist, report "No eligible work found" and skip to Step 9.
        }
      ' -f owner="<owner>" -F number=<project_number>
      ```
-     Note: If the owner is a user (not an org), replace `organization(login: $owner)` with `user(login: $owner)`.
+     If the above query returns an error (e.g., "Could not resolve to an Organization"), retry with `user` instead:
+     ```
+     gh api graphql -f query='
+       query($owner: String!, $number: Int!) {
+         user(login: $owner) {
+           projectV2(number: $number) {
+             id
+             field(name: "Status") {
+               ... on ProjectV2SingleSelectField {
+                 id
+                 options {
+                   id
+                   name
+                 }
+               }
+             }
+           }
+         }
+       }
+     ' -f owner="<owner>" -F number=<project_number>
+     ```
    - Find the option ID where `name` equals "In Progress".
    - Get the item ID from the project item-list results in Step 6.
    - Update the item status:

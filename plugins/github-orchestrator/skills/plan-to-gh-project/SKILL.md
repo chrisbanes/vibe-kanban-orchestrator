@@ -82,7 +82,46 @@ Expected format:
    ```
    gh project item-add <project_number> --owner <owner> --url <issue_url>
    ```
-5. Report: "Created parent issue #N: <title>"
+5. Set the item status to "Todo" on the project board. First, get the project metadata (try as organization first, fall back to user if it fails):
+   ```
+   gh api graphql -f query='
+     query($owner: String!, $number: Int!) {
+       organization(login: $owner) {
+         projectV2(number: $number) {
+           id
+           field(name: "Status") {
+             ... on ProjectV2SingleSelectField {
+               id
+               options {
+                 id
+                 name
+               }
+             }
+           }
+         }
+       }
+     }
+   ' -f owner="<owner>" -F number=<project_number>
+   ```
+   If that returns an error, retry with `user(login: $owner)` instead of `organization(login: $owner)`.
+
+   Then find the option ID where `name` equals "Todo" and the item ID from the `item-add` output, and set the status:
+   ```
+   gh api graphql -f query='
+     mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+       updateProjectV2ItemFieldValue(input: {
+         projectId: $projectId
+         itemId: $itemId
+         fieldId: $fieldId
+         value: { singleSelectOptionId: $optionId }
+       }) {
+         projectV2Item { id }
+       }
+     }
+   ' -f projectId="<project_id>" -f itemId="<item_id>" -f fieldId="<status_field_id>" -f optionId="<todo_option_id>"
+   ```
+   Cache the project metadata (project ID, field ID, Todo option ID) for reuse in Step 8.
+6. Report: "Created parent issue #N: <title>"
 
 ## Step 8: Create Sub-Issues
 
@@ -112,6 +151,7 @@ Expected format:
       ```
       gh project item-add <project_number> --owner <owner> --url <issue_url>
       ```
+   f. Set the item status to "Todo" using the cached project metadata from Step 7 and the same `updateProjectV2ItemFieldValue` mutation.
 3. Report each: "Created sub-issue #N: <title>"
 
 ## Step 9: Report
