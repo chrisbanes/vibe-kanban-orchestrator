@@ -1,5 +1,5 @@
 ---
-name: plan-to-vk-project
+name: plan-to-project
 description: Read a plan document and create a Vibe Kanban issue from it. Use after writing a plan to queue it for orchestrated execution.
 ---
 
@@ -117,5 +117,5 @@ Output a summary:
 - <simple_id> — <title> (if multiple)
 - ...
 
-Run `/vk-orchestrate` to pick up these issues, or wait for the next scheduled run.
+Run `/orchestrate` to pick up these issues, or wait for the next scheduled run.
 ```
