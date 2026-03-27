@@ -4,6 +4,8 @@ A Claude Code plugin that orchestrates coding workspaces from your [Vibe Kanban]
 
 Run manually or set up on a cron to keep your backlog moving.
 
+> This repository is a Claude Code plugin marketplace — install individual plugins from it, don't install the repo directly.
+
 ## Skills
 
 | Skill | Description |
