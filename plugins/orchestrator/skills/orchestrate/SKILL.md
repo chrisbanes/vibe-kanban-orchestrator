@@ -1,5 +1,5 @@
 ---
-name: vk-orchestrate
+name: orchestrate
 description: Check Vibe Kanban for open tasks, manage workspace lifecycle, start new workspaces for the next highest-priority task. Run manually or via cron.
 ---
 

@@ -10,8 +10,8 @@
   },
   "plugins": [
     {
-      "name": "vk-orchestrator",
-      "source": "./plugins/vk-orchestrator",
+      "name": "orchestrator",
+      "source": "./plugins/orchestrator",
       "description": "Orchestration and plan-to-project skills for Vibe Kanban — checks for open tasks, manages workspace lifecycle, starts new workspaces, and creates issues from plans.",
       "author": {
         "name": "Chris Banes",

@@ -10,8 +10,8 @@ Run manually or set up on a cron to keep your backlog moving.
 
 | Skill | Description |
 |-------|-------------|
-| `/vk-orchestrate` | Check for open tasks, manage workspace lifecycle, start new workspaces |
-| `/plan-to-vk-project` | Create Vibe Kanban issues from a plan document |
+| `/orchestrate` | Check for open tasks, manage workspace lifecycle, start new workspaces |
+| `/plan-to-project` | Create Vibe Kanban issues from a plan document |
 
 ## Prerequisites
 
@@ -24,7 +24,7 @@ Add the marketplace, then install the plugin:
 
 ```
 /plugin marketplace add chrisbanes/vibe-kanban-orchestrator
-/plugin install vk-orchestrator@vibe-kanban-orchestrator
+/plugin install orchestrator@vibe-kanban-orchestrator
 ```
 
 ## Configuration
@@ -64,13 +64,13 @@ Create `~/.vibe-kanban-orchestrate.json` to customize behavior:
 Run the orchestrator to check for work and start agents:
 
 ```
-/vk-orchestrate
+/orchestrate
 ```
 
 Set up a recurring run:
 
 ```
-/loop 10m /vk-orchestrate
+/loop 10m /orchestrate
 ```
 
 The orchestrator:
@@ -87,7 +87,7 @@ The orchestrator:
 Create issues from a plan document:
 
 ```
-/plan-to-vk-project
+/plan-to-project
 ```
 
 This will find plan files in your configured `plan_directory`, ask you to pick one, set priority, and create issues. You can create a single issue for the whole plan or one issue per `### Task` section.
